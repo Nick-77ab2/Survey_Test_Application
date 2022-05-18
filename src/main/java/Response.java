@@ -2,19 +2,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Response implements java.io.Serializable {
-    private List<String> response = new ArrayList<String>();
+    protected List<String> response;
 
-    public void setResponse(String response){
-        this.response.add(response);
+    public Response() {
+        response=new ArrayList<>();
+    }
+
+    public void setAnswer(String resp){
+        response.add(resp);
     }
 
     public List<String> getResponse(){
-        return this.response;
+        return response;
     }
 
-    public void display(){
-        for(int i=0; i<response.size(); i++){
-            //FILL LATER
+    public void display() {
+        if (this.response.size() > 0) {
+            for (String s : response) {
+                Output.display(s);
+            }
         }
     }
 }
