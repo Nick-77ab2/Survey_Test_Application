@@ -33,7 +33,7 @@ public class Matching extends Question implements java.io.Serializable{
     }
 
     protected void setResponse(String response){
-        this.userAnswer.setAnswer(response);
+        this.userAnswer.setResponse(response);
 
     }
 

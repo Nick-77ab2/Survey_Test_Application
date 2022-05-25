@@ -8,7 +8,7 @@ public class Response implements java.io.Serializable {
         response=new ArrayList<>();
     }
 
-    public void setAnswer(String resp){
+    public void setResponse(String resp){
         response.add(resp);
     }
 

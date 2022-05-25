@@ -1,7 +1,7 @@
 import java.io.*;
 
 /**
- * Rep the author, this is a semi-modified version of the student repo -Nick Pelletier
+ * Rep the author, this is from the student repo -Nick Pelletier
  * @author Sean Grimes, sean@seanpgrimes.com
  *
  * Serialize and deserialize any type of object that implements the serializable

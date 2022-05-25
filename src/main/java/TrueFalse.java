@@ -7,7 +7,7 @@ public class TrueFalse extends MultipleChoice implements java.io.Serializable{
     }
 
     protected void setResponse(String response){
-        this.userAnswer.setAnswer(response);
+        this.userAnswer.setResponse(response);
     }
 
     public Response getResponse(){

@@ -34,7 +34,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
        return this.choices;
    }
     protected void setResponse(String response){
-        this.userAnswer.setAnswer(response);
+        this.userAnswer.setResponse(response);
     }
 
     public Response getResponse(){
@@ -43,7 +43,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
 
    public void take(){
         Output.display(getPrompt());
-        Output.display(choices);
+        Output.display(getChoices());
         if(multipleAns) {
             Output.display("Enter choice when asked or 0 when done");
             for (int i = 0; i < choices.length; i++) {
@@ -75,7 +75,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
        String resp1 = Input.getYesNo();
        if(resp1.equals("yes")) {
            Output.display("Which choice would you like to edit?");
-           Output.display(choices);
+           Output.display(getChoices());
            choice = Input.getIntRespCeiling(numChoices);
            Output.display("Enter new text");
            choices[choice - 1] = Input.getStringResp();
@@ -85,7 +85,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
 
    public void display(){
        Output.display(getPrompt());
-       Output.display(choices);
+       Output.display(getChoices());
    }
 
 }
