@@ -11,6 +11,7 @@ public class Matching extends Question implements java.io.Serializable{
         colOne= new String[colMax];
         colTwo= new String[colMax];
         storedAnswer = new String[colMax];
+        numAns=colMax;
 
         Output.display("Column 1");
         for(int i=0; i<colMax; i++){
@@ -37,7 +38,7 @@ public class Matching extends Question implements java.io.Serializable{
 
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return super.getResponse();
     }
 

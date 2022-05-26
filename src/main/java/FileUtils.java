@@ -146,21 +146,98 @@ public class FileUtils {
         if(!dir.exists() || !dir.isDirectory())
             throw new IllegalStateException(dirPath + " is invalid");
 
-        File[] files = dir.listFiles();
-        if(files == null || files.length == 0)
+        File[] oldFiles = dir.listFiles();
+        ArrayList<File> files = new ArrayList<File>();
+        if(oldFiles == null || oldFiles.length == 0)
             throw new IllegalStateException(dirPath + " is empty");
-
+        for(int i=0; i<oldFiles.length; i++){
+            String name=oldFiles[i].getName();
+            if(name.contains("-Response")){
+                continue;
+            }
+            else{
+                files.add(oldFiles[i]);
+            }
+        }
         System.out.println("Please enter number of file to load: ");
-        for(int i = 0; i < files.length; ++i){
-            if(files[i].isFile())
+        for(int i = 0; i < files.size(); ++i){
+            if(files.get(i).isFile())
                 // Adding 1 to avoid 0-indexed UI. getName to chop off full path.
-                System.out.println((i + 1) + ") " + files[i].getName());
+                System.out.println((i) + ") " + files.get(i).getName());
         }
 
         // Get a valid integer between 1 and number of files
-        int fileSelection = Input.readIntInRange(1, files.length);
+        int fileSelection = Input.readIntInRange(0, files.size()-1);
 
         // Remember to subtract 1 to get back to 0-indexed value
-        return files[fileSelection - 1].getAbsolutePath();
+        return files.get(fileSelection).getAbsolutePath();
+    }
+    public static String listAndPickResponseFromDir(String dirPath, String theName){
+        File dir = new File(dirPath);
+        if(!dir.exists() || !dir.isDirectory())
+            throw new IllegalStateException(dirPath + " is invalid");
+
+        File[] oldFiles = dir.listFiles();
+        ArrayList<File> files = new ArrayList<File>();
+        if(oldFiles == null || oldFiles.length == 0)
+            throw new IllegalStateException(dirPath + " is empty");
+        for(int i=0; i<oldFiles.length; i++){
+            String name=oldFiles[i].getName();
+            if(name.contains(theName + "-Response")){
+                files.add(oldFiles[i]);
+            }
+            else{
+                continue;
+            }
+        }
+        System.out.println("Please enter number of file to load: ");
+        for(int i = 0; i < files.size(); ++i){
+            if(files.get(i).isFile())
+                // Adding 1 to avoid 0-indexed UI. getName to chop off full path.
+                System.out.println((i) + ") " + files.get(i).getName());
+        }
+
+        // Get a valid integer between 1 and number of files
+        int fileSelection = Input.readIntInRange(0, files.size()-1);
+
+        // Remember to subtract 1 to get back to 0-indexed value
+        return files.get(fileSelection).getAbsolutePath();
+    }
+
+
+    public static int getNumberOfResponses(String dirPath, String surveyName){
+        File dir = new File(dirPath);
+        int responseCount=0;
+        if(!dir.exists() || !dir.isDirectory())
+            throw new IllegalStateException(dirPath + " is invalid");
+
+        File[] oldFiles = dir.listFiles();
+        if(oldFiles == null || oldFiles.length == 0)
+            throw new IllegalStateException(dirPath + " is empty");
+        for(int i=0; i<oldFiles.length; i++){
+            String name=oldFiles[i].getName();
+            if(name.contains(surveyName) && name.contains("-Response")){
+                responseCount+=1;
+            }
+        }
+        return responseCount;
+
+    }
+    public static ArrayList<String> getResponses(String dirPath, String surveyName) {
+        File dir = new File(dirPath);
+        ArrayList<String> newFiles = new ArrayList<>();
+        if (!dir.exists() || !dir.isDirectory())
+            throw new IllegalStateException(dirPath + " is invalid");
+
+        File[] oldFiles = dir.listFiles();
+        if (oldFiles == null || oldFiles.length == 0)
+            throw new IllegalStateException(dirPath + " is empty");
+        for (int i = 0; i < oldFiles.length; i++) {
+            String name = oldFiles[i].getName();
+            if (name.contains(surveyName) && name.contains("-Response")) {
+                newFiles.add(oldFiles[i].getAbsolutePath());
+            }
+        }
+        return newFiles;
     }
 }

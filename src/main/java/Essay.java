@@ -5,21 +5,25 @@ public class Essay extends Question implements java.io.Serializable{
     protected void setChoices() {
         Output.display("Does this question have multiple answers (Yes/no)?");
         String resp = Input.getYesNo();
-        multipleAns= resp.equals("yes");
+        if (resp.equals("yes")) {
+            multipleAns=true;
+            Output.display("How many answers are there?");
+            numAns = Input.getIntRespFloor(0);
+        }
+        else{
+            multipleAns=false;
+        }
     }
 
     public void take(){
         Output.display(getPrompt());
         String input;
         if(multipleAns) {
-            Output.display("Answer with Essay when asked or 0 when done");
-            while(true) {
-                Output.display("Answer the prompt");
-                input = Input.getStringResp();
-                if(input.equals("0")){
-                    break;
-                }
-                setResponse(input);
+            Output.display("You must answer the prompt, " + numAns + "Times.");
+            for(int i =0; i<numAns; i++){
+                Output.display("Enter a response");
+                String resp = Input.getStringResp();
+                setResponse(resp);
             }
         }
         else{
@@ -33,7 +37,7 @@ public class Essay extends Question implements java.io.Serializable{
         this.userAnswer.setResponse(response);
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return this.userAnswer;
     }
 
@@ -51,3 +55,4 @@ public class Essay extends Question implements java.io.Serializable{
         Output.display(getPrompt());
     }
 }
+

@@ -1,13 +1,13 @@
-import java.util.ArrayList;
+import java.io.File;
+import java.util.*;
 
 public class Survey implements java.io.Serializable {
-    ArrayList<Question> questions;
-    //ArrayList<Response> answers;
+    ArrayList<Question> questions=null;
     String name;
-    private static final long serialVersionUID = 1L;
-    public String basePath = "surveys";
+    private static final long serialVersionUID = 329458345938L;
+    public String basePath = "Surveys" + File.separator;
     Survey(){
-        questions = new ArrayList<>();
+        questions = new ArrayList<Question>();
     }
     public ArrayList<Question> getQuestions(){
         return questions;
@@ -23,27 +23,27 @@ public class Survey implements java.io.Serializable {
     }
 
     protected void addMult(){
-        Question multQuestion = new MultipleChoice();
+        MultipleChoice multQuestion = new MultipleChoice();
         setPrompt(multQuestion);
         multQuestion.setChoices();
         questions.add(multQuestion);
     }
 
     protected void addTF(){
-        Question tFQuestion = new TrueFalse();
+        TrueFalse tFQuestion = new TrueFalse();
         setPrompt(tFQuestion);
         questions.add(tFQuestion);
     }
 
     protected void addEssay(){
-        Question essayQuestion = new Essay();
+        Essay essayQuestion = new Essay();
         setPrompt(essayQuestion);
         essayQuestion.setChoices();
         questions.add(essayQuestion);
     }
 
     protected void addShortAns(){
-        Question sAnsQuestion = new ShortAnswer();
+        ShortAnswer sAnsQuestion = new ShortAnswer();
         setPrompt(sAnsQuestion);
         Output.display("Please enter the character limit for this question");
         sAnsQuestion.setLimit(Input.getIntRespFloor(0));
@@ -52,14 +52,14 @@ public class Survey implements java.io.Serializable {
     }
 
     protected void addMatching(){
-        Question matchQuestion = new Matching();
+        Matching matchQuestion = new Matching();
         setPrompt(matchQuestion);
         matchQuestion.setChoices();
         questions.add(matchQuestion);
     }
 
     protected void addValidDate(){
-        Question validDateQuestion = new ValidDate();
+        ValidDate validDateQuestion = new ValidDate();
         setPrompt(validDateQuestion);
         validDateQuestion.setChoices();
         questions.add(validDateQuestion);
@@ -71,10 +71,119 @@ public class Survey implements java.io.Serializable {
     }
 
     public void take(){
-        for (Question question : questions) {
+        ArrayList<ResponseCorrectAnswer> answers = new ArrayList<>();
+        int i=0;
+        for(Question question : questions){
+            question.userAnswer.response=new ArrayList<>();
             question.take();
+            if(i!=answers.size()) {
+                answers.set(i, question.userAnswer);
+            }
+            else{
+                answers.add(question.userAnswer);
+            }
+            i+=1;
         }
+        storeResponses(answers);
 
+    }
+
+    public void tabulate(){
+        try {
+            ArrayList<ArrayList<ResponseCorrectAnswer>> allResponses = loadResponses();
+            ArrayList<ArrayList<ResponseCorrectAnswer>> correctedResponses = new ArrayList<>();
+            //Correct the 2D array so that each question has its own array of answers.
+            //go through all of the questions in the response
+            /*while(true) {
+                int i;
+                for (i = 0; i < allResponses.get(i).size(); i++) {
+                    //go through all of the responses
+                    ArrayList<ResponseCorrectAnswer> theList = new ArrayList<>();
+                    for (int j = 0; j < allResponses.size(); j++) {
+                        theList.add(allResponses.get(j).get(i));
+                    }
+                    correctedResponses.add(theList);
+                    if(i+1>allResponses.size()-1){
+                        break;
+                    }
+                }
+                if(i+1>allResponses.size()-1){
+                    break;
+                }
+            }
+
+             */
+            for(int i=0; i<allResponses.get(0).size(); i++) {
+                ArrayList<ResponseCorrectAnswer> theList = new ArrayList<>();
+                for (ArrayList<ResponseCorrectAnswer> arrResponse : allResponses) {
+                    theList.add(arrResponse.get(i));
+                }
+                correctedResponses.add(theList);
+            }
+
+            for (int i = 0; i < correctedResponses.size(); i++) {
+                Output.display("Question:");
+                Hashtable<String, Integer> nameAndCount = new Hashtable<String, Integer>();
+                Hashtable<List<String>, Integer> nameAndCount1 = new Hashtable<List<String>, Integer>();
+                Question q = questions.get(i);
+                Output.display(q.getPrompt());
+                ArrayList<ResponseCorrectAnswer> currentResponses = correctedResponses.get(i);
+                ArrayList<String> allQResponses = new ArrayList<>();
+
+                if (!(q instanceof Essay) && !(q instanceof Matching)) {
+                    for (int j = 0; j < currentResponses.size(); j++) {
+                        for (String response : currentResponses.get(j).getResponse()) {
+                            allQResponses.add(response);
+                        }
+                    }
+                    // build hash table with count
+                    for (String answer : allQResponses) {
+                        Integer count = nameAndCount.get(answer);
+                        if (count == null) {
+                            nameAndCount.put(answer, 1);
+                        } else {
+                            nameAndCount.put(answer, ++count);
+                        }
+                    }
+                    // Print duplicate elements from array in Java
+                    Set<Map.Entry<String, Integer>> entrySet = nameAndCount.entrySet();
+                    for (Map.Entry<String, Integer> entry : entrySet) {
+                        Output.display(entry.getKey() + ": " + entry.getValue());
+
+                    }
+                } else if (q instanceof Matching) {
+                    // build hash table with count
+                    for (ResponseCorrectAnswer answer : currentResponses) {
+                        List<String> theAnswer = answer.getResponse();
+                        Integer count = nameAndCount1.get(theAnswer);
+                        if (count == null) {
+                            nameAndCount1.put(theAnswer, 1);
+                        } else {
+                            nameAndCount1.put(theAnswer, ++count);
+                        }
+                    }
+                    // Print duplicate elements from array in Java
+                    Set<Map.Entry<List<String>, Integer>> entrySet = nameAndCount1.entrySet();
+                    for (Map.Entry<List<String>, Integer> entry : entrySet) {
+                        Output.display(String.valueOf(entry.getValue()));
+                        Output.display(entry.getKey(), q);
+                    }
+                } else if (q instanceof Essay) {
+
+                    for (int j = 0; j < currentResponses.size(); j++) {
+                        for (String response : currentResponses.get(j).getResponse()) {
+                            allQResponses.add(response);
+                        }
+                    }
+                    for (String answer : allQResponses) {
+                        Output.display(answer);
+                    }
+                }
+            }
+
+        }catch(Exception e){
+            Output.display("There was no responses to load");
+        }
     }
     public void modify(){
         int qNum;
@@ -104,24 +213,35 @@ public class Survey implements java.io.Serializable {
             question.display();
         }
     }
-    /* THE BELOW BECAME OBSOLETE WHEN I REALIZED THAT I NEED TO LOAD A SURVEY IN ORDER TO TAKE ONE
-    public void storeAnswers(ArrayList answers){
-        String personData;
-        String connectedString;
-        if(getName()==null) {
-            Output.display("Enter a name for the survey:");
-            setName(Input.getStringResp());
-        }
-        Output.display("Enter your name and response number:");
-        personData = Input.getStringResp();
-        connectedString= getName() + "_" + personData;
-        SerializationHelper.serialize(Response.class, answers,basePath,connectedString);
+
+    public void storeResponses(ArrayList<ResponseCorrectAnswer> answers){
+        int numResponses= FileUtils.getNumberOfResponses(basePath, getName());
+        String connectedString= getName() + "-Response" + (numResponses+1);
+        SerializationHelper.serialize(ArrayList.class, answers,basePath,connectedString);
 
     }
-    public void loadAnswers(){
-        //This is synonymous with loading a survey. The only real difference is what's stored.
+    public ArrayList<ArrayList<ResponseCorrectAnswer>> loadResponses(){
+        ArrayList<ArrayList<ResponseCorrectAnswer>> responses = new ArrayList<>();
+        ArrayList<String> responseFiles=FileUtils.getResponses(basePath,name);
+        for(String f : responseFiles){
+            responses.add(SerializationHelper.deserialize(ArrayList.class,f));
+        }
+        return responses;
     }
-     */
+    public ArrayList<ResponseCorrectAnswer> loadResponse(){
+        ArrayList<ResponseCorrectAnswer> userResponses=null;
+        String response=FileUtils.listAndPickResponseFromDir(basePath,name);
+        try{
+            userResponses=SerializationHelper.deserialize(ArrayList.class,response);
+            Output.display("File loaded Successfully");
+        }
+        catch(Exception e){
+            Output.display("Couldn't find file");
+        }
+        return userResponses;
+    }
+
+
 
 
 }

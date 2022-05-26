@@ -1,10 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Response implements java.io.Serializable {
+public class ResponseCorrectAnswer implements java.io.Serializable {
     protected List<String> response;
 
-    public Response() {
+    public ResponseCorrectAnswer() {
         response=new ArrayList<>();
     }
 
@@ -22,5 +22,8 @@ public class Response implements java.io.Serializable {
                 Output.display(s);
             }
         }
+    }
+    public boolean compare(ResponseCorrectAnswer a, ResponseCorrectAnswer b){
+        return a.response.equals(b.response);
     }
 }

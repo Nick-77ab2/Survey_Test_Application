@@ -3,7 +3,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
     private static final long serialVersionUID = 44053285L;
     protected String[] choices;
     protected int numChoices;
-    protected int numAns;
+    public int numAns=1;
     protected boolean multipleAns;
 
    protected void setChoices(){
@@ -37,7 +37,7 @@ public class MultipleChoice extends Question implements java.io.Serializable{
         this.userAnswer.setResponse(response);
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return this.userAnswer;
     }
 

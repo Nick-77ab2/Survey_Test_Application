@@ -1,7 +1,11 @@
 public abstract class Question implements java.io.Serializable {
     private static final long serialVersionUID = 23053285L;
-    public Response userAnswer = new Response();
+    public ResponseCorrectAnswer userAnswer = new ResponseCorrectAnswer();
     protected String questionPrompt;
+    protected int numAns=1;
+    protected boolean multipleAns;
+    protected String[] choices;
+    protected int limit;
 
     protected abstract void setChoices();
 
@@ -20,12 +24,11 @@ public abstract class Question implements java.io.Serializable {
         this.userAnswer.setResponse(response);
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return this.userAnswer;
     }
 
     public void take(){
-
     }
 
     public void modify(){
@@ -34,5 +37,8 @@ public abstract class Question implements java.io.Serializable {
 
     public void display(){
 
+    }
+    public int getLimit(){
+        return limit;
     }
 }

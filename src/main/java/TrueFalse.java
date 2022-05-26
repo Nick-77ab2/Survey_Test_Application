@@ -1,6 +1,6 @@
 public class TrueFalse extends MultipleChoice implements java.io.Serializable{
     private static final long serialVersionUID = 13053285L;
-    protected String[] choices={"T","F"};
+    protected String[] choices={"t","f"};
 
     public String[] getChoices(){
         return this.choices;
@@ -10,7 +10,7 @@ public class TrueFalse extends MultipleChoice implements java.io.Serializable{
         this.userAnswer.setResponse(response);
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return this.userAnswer;
     }
 

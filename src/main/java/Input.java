@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
@@ -119,4 +121,41 @@ public class Input {
         //noinspection ConstantConditions
         return Integer.parseInt(line);
     }
+    public static String compareInputToChoices(String[] choices){
+        String input = null;
+        Scanner reader = new Scanner(System.in);
+        while (input == null) {
+            input = reader.nextLine();
+            String input1 = input.toLowerCase();
+            for(int i=0; i<choices.length; i++) {
+                String choice = choices[i].toLowerCase();
+                if (input1.equals(choice)) {
+                    break;
+                }
+                if (i == choices.length - 1 && !input1.equals(choice)) {
+                    input = null;
+                    Output.display("Please only type an answer that is there.");
+                }
+            }
+        }
+        return input;
+    }
+
+    public static String getValidDateFormat(){
+        String input = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+        sdf.setLenient(false);
+        Scanner reader = new Scanner(System.in);
+        while (input == null) {
+            input = reader.nextLine();
+            try{
+                sdf.parse(input);
+            } catch (ParseException e) {
+                input=null;
+                Output.display("Please input a date in the format yyyy-mm-dd");
+            }
+        }
+        return input;
+    }
 }
+

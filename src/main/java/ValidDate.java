@@ -5,27 +5,32 @@ public class ValidDate extends Question implements java.io.Serializable{
     protected void setChoices() {
         Output.display("Does this question have multiple answers (Yes/no)?");
         String resp = Input.getYesNo();
-        multipleAns= resp.equals("yes");
+        if (resp.equals("yes")) {
+            multipleAns=true;
+            Output.display("How many answers are there?");
+            numAns = Input.getIntRespFloor(0);
+        }
+        else{
+            multipleAns=false;
+        }
+
     }
 
     protected void setResponse(String response){
         this.userAnswer.setResponse(response);
     }
 
-    public Response getResponse(){
+    public ResponseCorrectAnswer getResponse(){
         return this.userAnswer;
     }
 
     public void take(){
         Output.display(getPrompt());
         if(multipleAns){
-            Output.display("You can answer the prompt multiple times. Type 0 to quit");
-            while(true){
-                Output.display("Enter a response");
-                String resp = Input.getStringResp();
-                if(resp.equals("0")){
-                    break;
-                }
+            Output.display("You can answer the prompt, " + numAns + "Times.");
+            for(int i =0; i<numAns; i++){
+                Output.display("Enter a response in the format yyyy-mm-dd");
+                String resp = Input.getValidDateFormat();
                 setResponse(resp);
             }
         }
